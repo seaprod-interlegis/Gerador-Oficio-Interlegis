@@ -108,9 +108,9 @@ document.getElementById("meuFormulario").addEventListener("submit", function (ev
     // --- LÓGICA DE TEXTO INICIAL ---
     let textoInicio = "";
     if (tipoCasa === "Assembleia Legislativa") {
-      textoInicio = `A Assembleia Legislativa do Estado de ${estado}`;
+      textoInicio = `A Assembleia Legislativa do Estado de(o/a) ${estado}`;
     } else {
-      textoInicio = `A Câmara Municipal de ${municipio}`;
+      textoInicio = `A Câmara Municipal de(o/a) ${municipio}`;
     }
 
     const intro = `${textoInicio}, com contatos institucionais de telefone ${dados.telefoneCasa} e e-mail ${dados.emailCasa}, sob a presidência do(a) Sr(a). ${dados.nomePres}, contato ${dados.telPres} e e-mail ${dados.emailPres}, realiza a solicitação a seguir referente aos produtos e serviços do Programa Interlegis.`;
