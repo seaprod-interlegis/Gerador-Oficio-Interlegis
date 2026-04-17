@@ -1,0 +1,175 @@
+
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+  <meta charset="UTF-8">
+  <title>Ofício Interlegis</title>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.25/jspdf.plugin.autotable.min.js"></script>
+  <style>
+    /* Fundo da página com Cinza Claro */
+    body { font-family: 'Segoe UI', sans-serif; background-color: #d9d6d1; padding: 20px; color: #000; } 
+    .container { max-width: 900px; margin: auto; background: white; padding: 30px; border-radius: 8px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); }
+    
+    /* Títulos e detalhes com Azul Padrão */
+    h2 { color: #00305c; border-bottom: 2px solid #00305c; padding-bottom: 10px; } 
+    h3 { font-size: 1.1em; color: #00305c; margin-top: 25px; background: #d9d6d1; padding: 10px; border-radius: 4px; } 
+    
+    /* Estilos da caixa de informação */
+    .info-box { background-color: white; border-left: 4px solid #00305c; padding: 15px; margin-bottom: 25px; border-radius: 4px; font-size: 0.95em; line-height: 1.5; color: #000; }
+    .info-box h4 { margin-top: 0; color: #000; margin-bottom: 10px; font-size: 1.05em; }
+    .info-box p { margin-bottom: 10px; }
+    .info-box p:last-child { margin-bottom: 0; }
+    .info-box a { color: #00305c; font-weight: bold; text-decoration: underline; }
+
+    .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 15px; }
+    .campo { display: flex; flex-direction: column; margin-bottom: 10px; }
+    
+    /* Textos com Preto Puro para melhor contraste */
+    label { font-weight: bold; margin-bottom: 5px; font-size: 0.9em; color: #000; } 
+    input, select, textarea { padding: 10px; border: 1px solid #ccc; border-radius: 4px; font-size: 14px; color: #000; } 
+    
+    .responsavel-entry { background: #fff; border: 1px solid #d9d6d1; padding: 15px; margin-bottom: 10px; border-radius: 4px; } 
+    .checkbox-group { padding: 10px; }
+    .checkbox-item { margin-bottom: 10px; display: flex; align-items: center; gap: 10px; color: #000; } 
+    
+    button { cursor: pointer; border: none; border-radius: 4px; font-weight: bold; transition: 0.3s; }
+    
+    /* Botão Adicionar com Azul Padrão */
+    .btn-add { background-color: #00305c; color: white; padding: 10px 15px; margin-bottom: 20px; } 
+    .btn-add:hover { background-color: #00824a; }
+    
+    /* Botão Principal com Verde Padrão */
+    .btn-submit { background-color:  #00824a; color: white; padding: 15px; width: 100%; font-size: 1.1em; margin-top: 30px; } 
+    .btn-submit:hover { background-color: #001a33; }
+  </style>
+</head>
+<body>
+
+  <div class="container">
+    <form id="meuFormulario">
+      <h2>Solicitação de Produtos e Serviços Interlegis</h2>
+
+      <div class="info-box">
+        <h4>Prezado(a),</h4>
+        <p>Preencha com atenção este formulário. Ao final, clique no botão <strong>Gerar Ofício PDF</strong>. O ofício gerado deve ser assinado digitalmente pelo(a) presidente de sua casa legislativa. </p>
+        <p>Em seguida, abra um chamado em <a href="https://suporte.interlegis.leg.br" target="_blank">suporte.interlegis.leg.br</a> e anexe o ofício assinado. Atenderemos sua solicitação com a maior agilidade possível.</p>
+        <p><strong>Importante</strong>: a finalidade dos responsáveis técnicos indicados é representar sua casa legislativa nos atendimentos junto ao Interlegis, podendo solicitar produtos, autorizar manutenção, desativação ou migração. Sempre designar contatos capazes desta tomada de decisão.</p>
+        <p><strong>Dúvidas?</strong> Acesse nossa página de <a href="https://www12.senado.leg.br/interlegis/central-de-atendimento/solucao-de-problemas" target="_blank">perguntas frequentes</a> ou fale conosco pelo WhatsApp (61) 9 9608-0329.</p>
+        <p><i>Os campos marcados com asterisco (*) são de preenchimento obrigatório.</i></p>
+        <strong>
+      </div>
+
+      <h3>Identificação da Casa Legislativa</h3>
+      <div class="grid">
+        <div class="campo"><label>Brasão (Imagem):*</label><input type="file" id="brasao" accept="image/*" required></div>
+        <div class="campo"><label>Nome (ex.: Câmara Municipal de...):*</label><input type="text" id="nomeCasa" required></div>
+        <div class="campo"><label>CNPJ:*</label><input type="text" id="cnpjCasa" required></div>
+        <div class="campo"><label>Cidade - UF:*</label><input type="text" id="cidadeCasa" required></div>
+      </div>
+      <div class="grid">
+        <div class="campo"><label>Endereço:*</label><input type="text" id="endCasaRodape" required></div>
+        <div class="campo"><label>CEP:*</label><input type="text" id="cepRodape" required></div>
+        <div class="campo"><label>Site:*</label><input type="text" id="siteRodape" required></div>
+      
+        <div class="campo"><label>Telefone:*</label><input type="text" id="telefoneCasa" required></div>
+        <div class="campo"><label>E-mail:*</label><input type="email" id="emailCasa" required></div>
+        </div>      
+      <div class="grid">
+        <div class="campo"><label>Nome do(a) Presidente:*</label><input type="text" id="nomePresidente" required></div>
+        <div class="campo"><label>Telefone do(a) Presidente:*</label><input type="text" id="contatoPresidente" required></div>
+        <div class="campo"><label>E-mail do(a) Presidente:*</label><input type="email" id="emailPresidente" required></div>
+        <div class="campo"><label>Período de Presidência (ex.: 2025-2026):*</label><input type="text" id="mandatoPresidente" required></div>
+      </div>
+
+      <h3>1) Designação de Responsáveis Técnicos da Casa:</h3>
+      <div id="containerResponsaveis">
+        <div class="responsavel-entry">
+          <div class="grid">
+            <div class="campo"><label>Nome Completo:</label><input type="text" class="rep-nome"></div>
+            <div class="campo"><label>CPF:</label><input type="text" class="rep-cpf"></div>
+            <div class="campo"><label>E-mail:</label><input type="email" class="rep-email"></div>
+            <div class="campo"><label>Telefone/WhatsApp:</label><input type="text" class="rep-tel"></div>
+            <div class="campo">
+              <label>Vínculo:</label>
+              <select class="rep-vinculo">
+                <option value="(x) Efetivo/Concursado">Efetivo/Concursado</option>
+                <option value="(x) Comissionado">Comissionado</option>
+                <option value="(x) Terceirizado">Terceirizado</option>
+                <option value="(x) Parlamentar">Parlamentar</option>
+              </select>
+            </div>
+          </div>
+        </div>
+      </div>
+      <button type="button" class="btn-add" onclick="addResponsavel()">+ Adicionar Responsável</button>
+      
+      <div class="grid">
+        <div class="campo"><label>Para exclusão, informar nome(s) completo(s):</label><input type="text" id="exclusaoNome"></div>
+        <div class="campo"><label>Justificativa obrigatória da exclusão:</label><input type="text" id="exclusaoJust"></div>
+      </div>
+
+      <div class="grid">
+        <div class="campo">
+          <h3>2) Solicitação de implementação:</h3>
+          <div class="checkbox-item"><input type="checkbox" id="checkLeg"> Domínio .LEG.BR</div>
+          <div class="checkbox-item"><input type="checkbox" id="checkPortal"> Portal Modelo</div>
+          <div class="checkbox-item"><input type="checkbox" id="checkSapl"> SAPL</div>
+        </div>
+        <div class="campo">
+          <h3>3) Solicitação de desativação:</h3>
+          <div class="checkbox-item"><input type="checkbox" id="checkDesat"> Autorizo desativar Produto(s)</div>
+          <div class="campo"><label>Produto(s) a desativar:</label><input type="text" id="prodDesat"></div>
+          <div class="campo"><label>Justificativa de desativação:</label><input type="text" id="justDesat"></div>
+        </div>
+      </div>
+
+      <h3>4) Solicitação de Serviço(s) e DNS:</h3>
+      <div class="checkbox-group">
+        <div class="checkbox-item"><input type="checkbox" id="checkHosp" > Hospedagem no Senado Federal</div>
+        <div class="checkbox-item"><input type="checkbox" id="checkDeleg"> Delegação para provedor externo</div>
+        
+        <div style="padding-left: 20px; margin-top: 10px;">
+          <div class="grid">
+            <div class="campo"><label>DS1:</label><input type="text" id="dnsDs1"></div>
+            <div class="campo"><label>DS2:</label><input type="text" id="dnsDs2"></div>
+          </div>
+          <div class="campo"><label>DNSSEC:</label><input type="text" id="dnsSec"></div>
+        </div>
+      </div>
+
+      <div class="checkbox-group" style="background:#fff; border: 1px solid #ddd; padding:15px; margin-top:15px;">
+        <div class="checkbox-item"><input type="checkbox" id="checkDNSDominio"> Reapontamento DNS do domínio LEG.BR</div>
+        <div class="grid">
+          <div class="campo"><label>Registro A (Endereço IP):</label><input type="text" id="regA"></div>
+          <div class="campo"><label>CNAME:</label><input type="text" id="cname"></div>
+        </div>
+
+        <div class="checkbox-item" style="margin-top:15px;"><input type="checkbox" id="checkDNSEmail"> Reapontamento DNS do e-mail</div>
+        <div class="grid">
+          <div class="campo"><label>Registro A (Endereço IP):</label><input type="text" id="emailRegA"></div>
+          <div class="campo"><label>Registro MX:</label><input type="text" id="regMx"></div>
+          <div class="campo"><label>TXT SPF:</label><input type="text" id="txtSpf"></div>
+          <div class="campo"><label>TXT DKIM:</label><input type="text" id="txtDkim"></div>
+        </div>
+      </div>
+
+      <h3>5) Restauração de dados – Backup:</h3>
+      <div class="checkbox-group">
+        <div class="checkbox-item"><input type="checkbox" id="checkBack"> Autorizo a retroação dos dados</div>
+        <div class="grid">
+          <div class="campo"><label>Produto (SAPL, Portal Modelo, etc):</label><input type="text" id="backProd"></div>
+          <div class="campo"><label>Data da posição (dd/mm/aaaa):</label><input type="text" id="backData"></div>
+        </div>
+        <div class="campo"><label>Justificativa de restauração:</label><input type="text" id="backJust"></div>
+      </div>
+
+      
+
+      <button type="submit" class="btn-submit">Gerar Ofício PDF</button>
+    </form>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>
