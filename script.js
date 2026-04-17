@@ -11,10 +11,21 @@ document.getElementById("meuFormulario").addEventListener("submit", function (ev
   event.preventDefault();
   const brasaoInput = document.getElementById("brasao");
 
+  const tipoCasa = document.getElementById("tipoCasa").value || "_______________";
+  const municipio = document.getElementById("municipioCasa").value || "_______________";
+  const estado = document.getElementById("estadoCasa").value || "___";
+
+  // Formata o nome da Casa Legislativa dinamicamente usando o nome completo do Estado
+  let nomeConstruido = `${tipoCasa} de ${municipio} - ${estado}`;
+  if (tipoCasa === "Assembleia Legislativa") {
+      nomeConstruido = `Assembleia Legislativa do Estado de ${estado}`;
+  }
+
   const dados = {
-    nomeCasa: document.getElementById("nomeCasa").value || "________________",
+    nomeCasa: nomeConstruido,
+    poderLegislativo: tipoCasa === "Assembleia Legislativa" ? "Poder Legislativo Estadual" : "Poder Legislativo Municipal",
     cnpj: document.getElementById("cnpjCasa").value || "00.000.000/0001-01",
-    cidade: document.getElementById("cidadeCasa").value || "_____________",
+    cidade: `${municipio} - ${estado}`,
     telefoneCasa: document.getElementById("telefoneCasa").value || "_____________",
     emailCasa: document.getElementById("emailCasa").value || "_____________",
     nomePres: document.getElementById("nomePresidente").value || "________________",
@@ -39,18 +50,18 @@ document.getElementById("meuFormulario").addEventListener("submit", function (ev
     
     c4_Hosp: document.getElementById("checkHosp").checked ? "[x]" : "[ ]",
     c4_Deleg: document.getElementById("checkDeleg").checked ? "[x]" : "[ ]",
-    c4_Ds1: document.getElementById("dnsDs1").value || "______________________________________",
-    c4_Ds2: document.getElementById("dnsDs2").value || "______________________________________",
-    c4_DnsSec: document.getElementById("dnsSec").value || "_____________________________________________________",
+    c4_Ds1: document.getElementById("dnsDs1").value || "__________________________________________________",
+    c4_Ds2: document.getElementById("dnsDs2").value || "__________________________________________________",
+    c4_DnsSec: document.getElementById("dnsSec").value || "_________________________________________________",
     
     cDnsDom: document.getElementById("checkDNSDominio").checked ? "[x]" : "[ ]",
-    regA: document.getElementById("regA").value || "___________________________________",
-    cname: document.getElementById("cname").value || "___________________________________",
+    regA: document.getElementById("regA").value || "__________________________________________________",
+    cname: document.getElementById("cname").value || "__________________________________________________",
     cDnsEmail: document.getElementById("checkDNSEmail").checked ? "[x]" : "[ ]",
-    emRegA: document.getElementById("emailRegA").value || "___________________________________",
-    regMx: document.getElementById("regMx").value || "___________________________________",
-    spf: document.getElementById("txtSpf").value || "___________________________________",
-    dkim: document.getElementById("txtDkim").value || "___________________________________",
+    emRegA: document.getElementById("emailRegA").value || "__________________________________________________",
+    regMx: document.getElementById("regMx").value || "__________________________________________________",
+    spf: document.getElementById("txtSpf").value || "__________________________________________________",
+    dkim: document.getElementById("txtDkim").value || "__________________________________________________",
     
     c5_Back: document.getElementById("checkBack").checked ? "[x]" : "[ ]",
     c5_Prod: document.getElementById("backProd").value || "______________________",
@@ -70,7 +81,7 @@ document.getElementById("meuFormulario").addEventListener("submit", function (ev
       pdf.setFont("times", "bold");
       pdf.setFontSize(11);
       pdf.text(dados.nomeCasa.toUpperCase(), 45, y + 8);
-      pdf.text("Poder Legislativo Municipal", 45, y + 13);
+      pdf.text(dados.poderLegislativo, 45, y + 13);
       pdf.setFontSize(9);
       pdf.text(`CNPJ nº ${dados.cnpj}`, 45, y + 18);
     };
@@ -93,7 +104,17 @@ document.getElementById("meuFormulario").addEventListener("submit", function (ev
 
     y += 10;
     pdf.setFont("times", "normal");
-    const intro = `A Câmara Municipal de ${dados.nomeCasa}, com contatos institucionais de telefone ${dados.telefoneCasa} e e-mail ${dados.emailCasa}, sob a presidência do(a) Sr(a). ${dados.nomePres}, contato ${dados.telPres} e e-mail ${dados.emailPres}, realiza a solicitação a seguir referente aos produtos e serviços do Programa Interlegis.`;
+    
+    // --- LÓGICA DE TEXTO INICIAL ---
+    let textoInicio = "";
+    if (tipoCasa === "Assembleia Legislativa") {
+      textoInicio = `A Assembleia Legislativa do Estado de ${estado}`;
+    } else {
+      textoInicio = `A Câmara Municipal de ${municipio}`;
+    }
+
+    const intro = `${textoInicio}, com contatos institucionais de telefone ${dados.telefoneCasa} e e-mail ${dados.emailCasa}, sob a presidência do(a) Sr(a). ${dados.nomePres}, contato ${dados.telPres} e e-mail ${dados.emailPres}, realiza a solicitação a seguir referente aos produtos e serviços do Programa Interlegis.`;
+    
     pdf.text(intro, margem + 5, y, { maxWidth: 165, align: "justify" });
     
     y += 20;
@@ -147,9 +168,17 @@ document.getElementById("meuFormulario").addEventListener("submit", function (ev
     y += 6;
     pdf.text(`${dados.c4_Hosp} Hospedagem do domínio LEG.BR no datacenter do Senado Federal`, margem + 5, y);
     y += 6;
-    pdf.text(`${dados.c4_Deleg} Delegação¹ do domínio LEG.BR para hospedagem em provedor externo (único serviço que não exige ACT)`, margem + 5, y);
+    pdf.text(`${dados.c4_Deleg} Delegação¹ do domínio LEG.BR para hospedagem em provedor externo`, margem + 5, y);
+    
+    // Alinhando DS1 e DS2 em linhas separadas para não passar a margem
     y += 6;
-    pdf.text(`Dados necessários:\nDS1: ${dados.c4_Ds1} DS2: ${dados.c4_Ds2}\nDNSSEC²: ${dados.c4_DnsSec}`, margem + 10, y);
+    pdf.text("Dados necessários:", margem + 10, y);
+    y += 6;
+    pdf.text(`DS1: ${dados.c4_Ds1}`, margem + 10, y);
+    y += 6;
+    pdf.text(`DS2: ${dados.c4_Ds2}`, margem + 10, y);
+    y += 6;
+    pdf.text(`DNSSEC²: ${dados.c4_DnsSec}`, margem + 10, y);
 
     // --- RODAPÉ PÁGINA 1 ---
     pdf.setFontSize(7);
@@ -172,7 +201,11 @@ document.getElementById("meuFormulario").addEventListener("submit", function (ev
     pdf.text(`${dados.cDnsDom} Reapontamento de DNS do domínio LEG.BR para nova hospedagem externa³`, margem, y);
     y += 6;
     pdf.setFont("times", "normal");
-    pdf.text(`Dados necessários:\nRegistro A (endereço IP): ${dados.regA}\nCNAME: ${dados.cname}`, margem + 5, y);
+    pdf.text("Dados necessários:", margem + 5, y);
+    y += 6;
+    pdf.text(`Registro A (endereço IP): ${dados.regA}`, margem + 5, y);
+    y += 6;
+    pdf.text(`CNAME: ${dados.cname}`, margem + 5, y);
 
     y += 15;
     pdf.setFontSize(10);
@@ -181,10 +214,17 @@ document.getElementById("meuFormulario").addEventListener("submit", function (ev
     y += 6;
     pdf.setFont("times", "normal");
     pdf.text("Dados necessários:", margem + 5, y);
+    
+    // Alinhando Registros de e-mail em linhas separadas para corrigir a margem
     y += 6;
-    pdf.text(`Registro A (endereço IP): ${dados.emRegA}      Registro MX: ${dados.regMx}`, margem + 5, y);
+    pdf.text(`Registro A (endereço IP): ${dados.emRegA}`, margem + 5, y);
     y += 6;
-    pdf.text(`TXT SPF: ${dados.spf}      TXT DKIM: ${dados.dkim}`, margem + 5, y);
+    pdf.text(`Registro MX: ${dados.regMx}`, margem + 5, y);
+    y += 6;
+    pdf.text(`TXT SPF: ${dados.spf}`, margem + 5, y);
+    y += 6;
+    pdf.text(`TXT DKIM: ${dados.dkim}`, margem + 5, y);
+    
     y += 8;
     pdf.setFontSize(8);
     pdf.text("Acesso à Interface de gerência: correioadm.municipio.uf.leg.br | Conta: usuário@municipio.uf.leg.br", margem + 5, y);
