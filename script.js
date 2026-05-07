@@ -7,6 +7,13 @@ function addResponsavel() {
   container.appendChild(novoFilho);
 }
 
+function removerResponsavel(botao) {
+  const container = document.getElementById("containerResponsaveis");
+  const total = container.querySelectorAll(".responsavel-entry").length;
+  botao.closest(".responsavel-entry").remove();
+}
+
+
 function toggleSecao(checkboxId, containerId) {
     const checkbox = document.getElementById(checkboxId);
     const container = document.getElementById(containerId);
