@@ -8,8 +8,6 @@ function addResponsavel() {
 }
 
 function removerResponsavel(botao) {
-  const container = document.getElementById("containerResponsaveis");
-  const total = container.querySelectorAll(".responsavel-entry").length;
   botao.closest(".responsavel-entry").remove();
 }
 
