@@ -62,6 +62,9 @@
     
     .btn-add { background-color: #00305c; color: white; padding: 10px 15px; margin-bottom: 20px; } 
     .btn-add:hover { background-color: #00824a; }
+
+    .btn-remove { background-color: #b00020; color: white; padding: 10px 15px;  margin-bottom: 20px;  }
+    .btn-remove:hover { background-color: #7c0015; }
     
     .btn-submit { background-color: #00824a; color: white; padding: 15px; width: 100%; font-size: 1.1em; margin-top: 20px; } 
     .btn-submit:hover { background-color: #001a33; }
@@ -187,6 +190,7 @@
               </div>
             </div>
             <button type="button" class="btn-add" onclick="addResponsavel()">+ Adicionar Responsável</button>
+            <button type="button" class="btn-remove" onclick="removerResponsavel(this)">- Remover responsável</button>
         </div>
 
         <hr class="divisor-interno">
