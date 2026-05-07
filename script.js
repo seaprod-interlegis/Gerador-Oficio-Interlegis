@@ -2,15 +2,25 @@ const { jsPDF } = window.jspdf;
 
 function addResponsavel() {
   const container = document.getElementById("containerResponsaveis");
+  // Clona o primeiro elemento
   const novoFilho = container.children[0].cloneNode(true);
+  // Limpa os valores dos inputs clonados
   novoFilho.querySelectorAll('input').forEach(input => input.value = '');
   container.appendChild(novoFilho);
 }
 
 function removerResponsavel(botao) {
-  botao.closest(".responsavel-entry").remove();
+  const container = document.getElementById("containerResponsaveis");
+  // Conta quantos blocos existem atualmente
+  const totalResponsaveis = container.getElementsByClassName("responsavel-entry").length;
+  
+  // Impede que o último responsável seja apagado
+  if (totalResponsaveis > 1) {
+    botao.closest(".responsavel-entry").remove();
+  } else {
+    alert("É necessário manter pelo menos um formulário de responsável técnico.");
+  }
 }
-
 
 function toggleSecao(checkboxId, containerId) {
     const checkbox = document.getElementById(checkboxId);
@@ -24,7 +34,6 @@ function toggleSecao(checkboxId, containerId) {
         const campos = container.querySelectorAll('input, select');
         
         campos.forEach(campo => {
-
             campo.required = estaMarcado;
         });
     }

@@ -60,10 +60,11 @@
     
     button { cursor: pointer; border: none; border-radius: 4px; font-weight: bold; transition: 0.3s; }
     
-    .btn-add { background-color: #00305c; color: white; padding: 10px 15px; margin-bottom: 20px; } 
+    .btn-add { background-color: #00305c; color: white; padding: 10px 15px; margin-bottom: 20px; margin-top: 10px; } 
     .btn-add:hover { background-color: #00824a; }
 
-    .btn-remove { background-color: #787777; color: white; padding: 10px 15px;  margin-bottom: 20px;  }
+    /* Estilo atualizado do botão remover para se alinhar melhor dentro do bloco */
+    .btn-remove { background-color: #787777; color: white; padding: 6px 12px; margin-top: 5px; font-size: 0.85em; }
     .btn-remove:hover { background-color: #7c0015; }
     
     .btn-submit { background-color: #00824a; color: white; padding: 15px; width: 100%; font-size: 1.1em; margin-top: 20px; } 
@@ -186,11 +187,12 @@
                       <option value="(x) Terceirizado">Terceirizado</option>
                     </select>
                   </div>
-                </div>                                              
+                </div> 
+                <button type="button" class="btn-remove" onclick="removerResponsavel(this)">Excluir este responsável</button>                                             
               </div>
             </div>
-            <button type="button" class="btn-add" onclick="addResponsavel()">+ Adicionar Responsável</button>
-            <button type="button" class="btn-remove" onclick="removerResponsavel(this)">- Remover Responsável</button> 
+            
+            <button type="button" class="btn-add" onclick="addResponsavel()">+ Adicionar Outro Responsável</button>
         </div>
 
         <hr class="divisor-interno">
