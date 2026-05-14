@@ -6,15 +6,13 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.25/jspdf.plugin.autotable.min.js"></script>
   <style>
-    /* Fundo da página com Cinza Claro */
+  
     body { font-family: 'Segoe UI', sans-serif; background-color: #d9d6d1; padding: 20px; color: #000; } 
     .container { max-width: 900px; margin: auto; background: white; padding: 30px; border-radius: 8px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); }
     
-    /* Títulos e detalhes com Azul Padrão */
     h2 { color: #00305c; border-bottom: 2px solid #00305c; padding-bottom: 10px; } 
     h3 { font-size: 1.1em; color: #00305c; margin-top: 25px; margin-bottom: 5px; } 
     
-    /* Estilos da caixa de informação */
     .info-box { background-color: white; border-left: 4px solid #00305c; padding: 15px; margin-bottom: 25px; border-radius: 4px; font-size: 0.95em; line-height: 1.5; color: #000; }
     .info-box h4 { margin-top: 0; color: #000; margin-bottom: 10px; font-size: 1.05em; }
     .info-box p { margin-bottom: 10px; }
@@ -63,7 +61,6 @@
     .btn-add { background-color: #00305c; color: white; padding: 10px 15px; margin-bottom: 20px; margin-top: 10px; } 
     .btn-add:hover { background-color: #00824a; }
 
-    /* Estilo atualizado do botão remover para se alinhar melhor dentro do bloco */
     .btn-remove { background-color: #787777; color: white; padding: 6px 12px; margin-top: 5px; font-size: 0.85em; }
     .btn-remove:hover { background-color: #7c0015; }
     
@@ -72,7 +69,6 @@
 
     .divisor-interno { border: 0; border-top: 1px dashed #ccc; margin: 20px 0; }
     
-    /* Classe para esconder os blocos dinâmicos */
     .secao-escondida { display: none; padding-left: 20px; margin-top: 15px; border-left: 2px solid #ddd; }
   </style>
 </head>
@@ -168,7 +164,7 @@
       <div class="box-borda">
         
         <div class="checkbox-item">
-            <input type="checkbox" id="checkAddResp" onclick="toggleSecao('checkAddResp', 'secAddResp')"> Desejo designar responsáveis técnicos <strong>(obrigatório: pelo menos um efetivo ou comissionado)</strong>
+            <input type="checkbox" id="checkAddResp" onclick="toggleSecao('checkAddResp', 'secAddResp')"> Desejo designar responsáveis técnicos (obrigatório: pelo menos um efetivo ou comissionado)
         </div>
         
         <div id="secAddResp" class="secao-escondida">
@@ -181,14 +177,13 @@
                   <div class="campo"><label>Telefone/WhatsApp:</label><input type="text" class="rep-tel"></div>
                   <div class="campo">
                     <label>Vínculo:</label>
-                    <select class="rep-vinculo">
-                      <option value="(x) Efetivo/Concursado">Efetivo/Concursado</option>
+                    <select class="rep-vinculo" disabled>
+                      <option value="(x) Efetivo/Concursado" selected>Efetivo/Concursado</option>
                       <option value="(x) Comissionado">Comissionado</option>
-                      <option value="(x) Terceirizado">Terceirizado</option>
                     </select>
                   </div>
                 </div> 
-                <button type="button" class="btn-remove" onclick="removerResponsavel(this)">Excluir este responsável</button>                                             
+                <button type="button" class="btn-remove" style="display: none;" onclick="removerResponsavel(this)">Excluir este responsável</button>                                            
               </div>
             </div>
             
@@ -242,22 +237,33 @@
         <hr class="divisor-interno">
         
         <div class="checkbox-item">
-            <input type="checkbox" id="checkDeleg" onclick="toggleSecao('checkDeleg', 'secDeleg')"> Delegação para provedor externo (todos os produtos/serviços Interlegis serão desativados; obrigatório marcar autorização no item 3)
-        </div>
-        <div id="secDeleg" class="secao-escondida">
-          <div class="grid">
-            <div class="campo"><label>DS1:</label><input type="text" id="dnsDs1"></div>
-            <div class="campo"><label>DS2:</label><input type="text" id="dnsDs2"></div>
-          </div>
-          <div class="campo"><label>DNSSEC:</label><input type="text" id="dnsSec"></div>
-        </div>
+  <input type="checkbox" id="checkDeleg" onclick="toggleSecao('checkDeleg', 'secDeleg')"> Delegação para provedor externo
+</div>
+<div id="secDeleg" class="secao-escondida">
+  
+
+  <div style="font-size: 0.85em; color: #7c0015; margin-bottom: 15px; background: #fdf2f2; padding: 10px; border-left: 3px solid #7c0015; border-radius: 4px;">
+    <em>Atenção: Todos os produtos/serviços Interlegis serão desativados, obrigatório marcar autorização no item 3.</em>
+  </div>
+
+  <div class="grid">
+    <div class="campo"><label>DS1:</label><input type="text" id="dnsDs1"></div>
+    <div class="campo"><label>DS2:</label><input type="text" id="dnsDs2"></div>
+  </div>
+  <div class="campo"><label>DNSSEC:</label><input type="text" id="dnsSec"></div>
+</div>
 
         <hr class="divisor-interno">
 
         <div class="checkbox-item">
-            <input type="checkbox" id="checkDNSDominio" onclick="toggleSecao('checkDNSDominio', 'secDnsDom')"> Reapontamento DNS do domínio LEG.BR (será desativado o Portal Modelo, enquanto os outros produtos serão mantidos; obrigatório marcar autorização no item 3)
+            <input type="checkbox" id="checkDNSDominio" onclick="toggleSecao('checkDNSDominio', 'secDnsDom')"> Reapontamento DNS do domínio LEG.BR 
         </div>
         <div id="secDnsDom" class="secao-escondida">
+            <div style="font-size: 0.85em; color: #7c0015; margin-bottom: 15px; background: #fdf2f2; padding: 10px; border-left: 3px solid #7c0015; border-radius: 4px;">
+    <em>Atenção: Será desativado o Portal Modelo, enquanto os outros produtos serão mantidos, obrigatório marcar autorização no item 3.</em>
+  </div>
+          
+          
           <div class="grid">
             <div class="campo"><label>Registro A (Endereço IP):</label><input type="text" id="regA"></div>
             <div class="campo"><label>CNAME:</label><input type="text" id="cname"></div>
@@ -266,17 +272,22 @@
 
         <hr class="divisor-interno">
 
-        <div class="checkbox-item">
-            <input type="checkbox" id="checkDNSEmail" onclick="toggleSecao('checkDNSEmail', 'secDnsEmail')"> Reapontamento DNS do e-mail (será desativado o serviço de e-mail oferecido pelo Interlegis de forma definitiva, mas poderá ser mantido o domínio .leg.br nos endereços dos e-mails)
-        </div>
-        <div id="secDnsEmail" class="secao-escondida">
-          <div class="grid">
-            <div class="campo"><label>Registro A (Endereço IP):</label><input type="text" id="emailRegA"></div>
-            <div class="campo"><label>Registro MX:</label><input type="text" id="regMx"></div>
-            <div class="campo"><label>TXT SPF:</label><input type="text" id="txtSpf"></div>
-            <div class="campo"><label>TXT DKIM:</label><input type="text" id="txtDkim"></div>
-          </div>
-        </div>
+       <div class="checkbox-item">
+    <input type="checkbox" id="checkDNSEmail" onclick="toggleSecao('checkDNSEmail', 'secDnsEmail')"> Reapontamento DNS do e-mail
+</div>
+<div id="secDnsEmail" class="secao-escondida">
+    
+    <div style="font-size: 0.85em; color: #7c0015; margin-bottom: 15px; background: #fdf2f2; padding: 10px; border-left: 3px solid #7c0015; border-radius: 4px;">
+        <em>Atenção: Será desativado o serviço de e-mail oferecido pelo Interlegis de forma definitiva, mas poderá ser mantido o domínio .leg.br nos endereços dos e-mails.</em>
+    </div>
+
+    <div class="grid">
+        <div class="campo"><label>Registro A (Endereço IP):</label><input type="text" id="emailRegA"></div>
+        <div class="campo"><label>Registro MX:</label><input type="text" id="regMx"></div>
+        <div class="campo"><label>TXT SPF:</label><input type="text" id="txtSpf"></div>
+        <div class="campo"><label>TXT DKIM:</label><input type="text" id="txtDkim"></div>
+    </div>
+</div>
 
       </div>
 

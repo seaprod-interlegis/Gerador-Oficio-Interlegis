@@ -2,19 +2,34 @@ const { jsPDF } = window.jspdf;
 
 function addResponsavel() {
   const container = document.getElementById("containerResponsaveis");
-  // Clona o primeiro elemento
   const novoFilho = container.children[0].cloneNode(true);
-  // Limpa os valores dos inputs clonados
+  
   novoFilho.querySelectorAll('input').forEach(input => input.value = '');
+  
+  const select = novoFilho.querySelector('.rep-vinculo');
+  if (select) {
+      select.disabled = false;
+      const temTerceirizado = Array.from(select.options).some(opt => opt.value === "(x) Terceirizado");
+      if (!temTerceirizado) {
+          const optTerceirizado = document.createElement('option');
+          optTerceirizado.value = "(x) Terceirizado";
+          optTerceirizado.text = "Terceirizado";
+          select.appendChild(optTerceirizado);
+      }
+  }
+
+  const btnRemove = novoFilho.querySelector('.btn-remove');
+  if (btnRemove) {
+      btnRemove.style.display = 'inline-block';
+  }
+
   container.appendChild(novoFilho);
 }
 
 function removerResponsavel(botao) {
   const container = document.getElementById("containerResponsaveis");
-  // Conta quantos blocos existem atualmente
   const totalResponsaveis = container.getElementsByClassName("responsavel-entry").length;
   
-  // Impede que o último responsável seja apagado
   if (totalResponsaveis > 1) {
     botao.closest(".responsavel-entry").remove();
   } else {
@@ -41,19 +56,30 @@ function toggleSecao(checkboxId, containerId) {
 
 document.getElementById("meuFormulario").addEventListener("submit", function (event) {
   event.preventDefault();
+
+  const checkDeleg = document.getElementById("checkDeleg") && document.getElementById("checkDeleg").checked;
+  const checkDnsDom = document.getElementById("checkDNSDominio") && document.getElementById("checkDNSDominio").checked;
+  const checkDesat = document.getElementById("checkDesat") && document.getElementById("checkDesat").checked;
+
+  if ((checkDeleg || checkDnsDom) && !checkDesat) {
+      alert("ATENÇÃO: Como você selecionou 'Delegação para provedor externo' ou 'Reapontamento DNS do domínio', é OBRIGATÓRIO marcar e preencher a seção '3) Solicitação de desativação'.");
+      
+      document.getElementById("checkDesat").scrollIntoView({ behavior: 'smooth', block: 'center' });
+      
+      return; 
+  }
+
   const brasaoInput = document.getElementById("brasao");
 
   const tipoCasa = document.getElementById("tipoCasa").value || "_______________";
   const municipio = document.getElementById("municipioCasa").value || "_______________";
   const estado = document.getElementById("estadoCasa").value || "___";
 
-  // Formata o nome da Casa Legislativa dinamicamente usando o nome completo do Estado
   let nomeConstruido = `${tipoCasa} de ${municipio} - ${estado}`;
   if (tipoCasa === "Assembleia Legislativa") {
       nomeConstruido = `Assembleia Legislativa do Estado de ${estado}`;
   }
 
-  // Lógica para capturar dados de Exclusão apenas se a caixinha estiver marcada
   const checkExc = document.getElementById("checkExcResp") && document.getElementById("checkExcResp").checked;
   const valExcNome = checkExc && document.getElementById("exclusaoNome").value ? document.getElementById("exclusaoNome").value : "____________________________________";
   const valExcJust = checkExc && document.getElementById("exclusaoJust").value ? document.getElementById("exclusaoJust").value : "____________________________________";
@@ -142,7 +168,6 @@ document.getElementById("meuFormulario").addEventListener("submit", function (ev
     y += 10;
     pdf.setFont("times", "normal");
     
-    // --- LÓGICA DE TEXTO INICIAL ---
     let textoInicio = "";
     if (tipoCasa === "Assembleia Legislativa") {
       textoInicio = `A Assembleia Legislativa do Estado de(o/a) ${estado}`;
@@ -160,7 +185,6 @@ document.getElementById("meuFormulario").addEventListener("submit", function (ev
     
     let rows = [];
 
-    // Verifica se a caixinha de ADICIONAR responsáveis técnicos está marcada
     if (document.getElementById("checkAddResp") && document.getElementById("checkAddResp").checked) {
       rows = Array.from(document.querySelectorAll(".responsavel-entry")).map(el => [
         el.querySelector(".rep-nome") ? el.querySelector(".rep-nome").value : '',
@@ -170,7 +194,6 @@ document.getElementById("meuFormulario").addEventListener("submit", function (ev
         el.querySelector(".rep-vinculo") ? el.querySelector(".rep-vinculo").value : ''
       ]);
     } else {
-      // Se não estiver marcada, gera uma linha com 5 colunas totalmente vazias para o PDF
       rows = [['', '', '', '', '']];
     }
 
@@ -215,7 +238,6 @@ document.getElementById("meuFormulario").addEventListener("submit", function (ev
     y += 6;
     pdf.text(`${dados.c4_Deleg} Delegação¹ do domínio LEG.BR para hospedagem em provedor externo`, margem + 5, y);
     
-    // Alinhando DS1 e DS2 em linhas separadas para não passar a margem
     y += 6;
     pdf.text("Dados necessários:", margem + 10, y);
     y += 6;
@@ -260,7 +282,6 @@ document.getElementById("meuFormulario").addEventListener("submit", function (ev
     pdf.setFont("times", "normal");
     pdf.text("Dados necessários:", margem + 5, y);
     
-    // Alinhando Registros de e-mail em linhas separadas para corrigir a margem
     y += 6;
     pdf.text(`Registro A (endereço IP): ${dados.emRegA}`, margem + 5, y);
     y += 6;
@@ -317,3 +338,31 @@ document.getElementById("meuFormulario").addEventListener("submit", function (ev
     gerarPDF(null);
   }
 });
+
+function forcarDesativacao() {
+    const checkDeleg = document.getElementById("checkDeleg") && document.getElementById("checkDeleg").checked;
+    const checkDnsDom = document.getElementById("checkDNSDominio") && document.getElementById("checkDNSDominio").checked;
+    const checkDesatElement = document.getElementById("checkDesat");
+
+    if (checkDesatElement) {
+        if (checkDeleg || checkDnsDom) {
+            if (!checkDesatElement.checked) {
+                checkDesatElement.checked = true; // Marca o checkbox
+                toggleSecao('checkDesat', 'secDesat'); // Mostra a caixa e torna required
+            }
+        } 
+        else {
+            if (checkDesatElement.checked) {
+                checkDesatElement.checked = false; // Desmarca o checkbox
+                toggleSecao('checkDesat', 'secDesat'); // Esconde a caixa e tira o required
+            }
+        }
+    }
+}
+
+if (document.getElementById("checkDeleg")) {
+    document.getElementById("checkDeleg").addEventListener("change", forcarDesativacao);
+}
+if (document.getElementById("checkDNSDominio")) {
+    document.getElementById("checkDNSDominio").addEventListener("change", forcarDesativacao);
+}
