@@ -61,8 +61,12 @@ document.getElementById("meuFormulario").addEventListener("submit", function (ev
   const checkDnsDom = document.getElementById("checkDNSDominio") && document.getElementById("checkDNSDominio").checked;
   const checkDesat = document.getElementById("checkDesat") && document.getElementById("checkDesat").checked;
 
-  if ((checkDeleg || checkDnsDom) && !checkDesat) {
-      alert("ATENÇÃO: Como você selecionou 'Delegação para provedor externo' ou 'Reapontamento DNS do domínio', é OBRIGATÓRIO marcar e preencher a seção '3) Solicitação de desativação'.");
+  const radioSimDeleg = document.querySelector('input[name="possuiProdutosDeleg"][value="sim"]');
+  const delegacaoComProdutos = checkDeleg && radioSimDeleg && radioSimDeleg.checked;
+
+
+  if ((delegacaoComProdutos || checkDnsDom) && !checkDesat) {
+      alert("ATENÇÃO: Como você confirmou possuir produtos ativos na Delegação ou selecionou 'Reapontamento DNS', é OBRIGATÓRIO marcar e preencher a seção '3) Solicitação de desativação'.");
       
       document.getElementById("checkDesat").scrollIntoView({ behavior: 'smooth', block: 'center' });
       
@@ -340,29 +344,28 @@ document.getElementById("meuFormulario").addEventListener("submit", function (ev
 });
 
 function forcarDesativacao() {
-    const checkDeleg = document.getElementById("checkDeleg") && document.getElementById("checkDeleg").checked;
     const checkDnsDom = document.getElementById("checkDNSDominio") && document.getElementById("checkDNSDominio").checked;
     const checkDesatElement = document.getElementById("checkDesat");
+    
+    const radioSim = document.querySelector('input[name="possuiProdutosDeleg"][value="sim"]');
+    const simMarcado = radioSim && radioSim.checked;
 
     if (checkDesatElement) {
-        if (checkDeleg || checkDnsDom) {
+        if (checkDnsDom) {
             if (!checkDesatElement.checked) {
-                checkDesatElement.checked = true; // Marca o checkbox
-                toggleSecao('checkDesat', 'secDesat'); // Mostra a caixa e torna required
+                checkDesatElement.checked = true; 
+                toggleSecao('checkDesat', 'secDesat'); 
             }
         } 
-        else {
+        else if (!simMarcado) {
             if (checkDesatElement.checked) {
-                checkDesatElement.checked = false; // Desmarca o checkbox
-                toggleSecao('checkDesat', 'secDesat'); // Esconde a caixa e tira o required
+                checkDesatElement.checked = false;
+                toggleSecao('checkDesat', 'secDesat'); 
             }
         }
     }
 }
 
-if (document.getElementById("checkDeleg")) {
-    document.getElementById("checkDeleg").addEventListener("change", forcarDesativacao);
-}
 if (document.getElementById("checkDNSDominio")) {
     document.getElementById("checkDNSDominio").addEventListener("change", forcarDesativacao);
 }

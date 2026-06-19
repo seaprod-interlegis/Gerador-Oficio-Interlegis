@@ -183,7 +183,7 @@
                     </select>
                   </div>
                 </div> 
-                <button type="button" class="btn-remove" style="display: none;" onclick="removerResponsavel(this)">Excluir este responsável</button>                                            
+                <button type="button" class="btn-remove" style="display: none;" onclick="removerResponsavel(this)">Excluir este responsável</button>                                        
               </div>
             </div>
             
@@ -237,21 +237,37 @@
         <hr class="divisor-interno">
         
         <div class="checkbox-item">
-  <input type="checkbox" id="checkDeleg" onclick="toggleSecao('checkDeleg', 'secDeleg')"> Delegação para provedor externo
-</div>
-<div id="secDeleg" class="secao-escondida">
-  
+          <input type="checkbox" id="checkDeleg" onclick="toggleSecao('checkDeleg', 'secDeleg')"> Delegação para provedor externo
+        </div>
+        
+        <div id="secDeleg" class="secao-escondida">
+          
+          <div style="margin-bottom: 15px; background: #f9f9f9; padding: 12px; border: 1px solid #ddd; border-radius: 4px;">
+              <label style="display: block; margin-bottom: 8px; font-weight: bold;">A Casa Legislativa possui produtos ativos no Interlegis?</label>
+              <div style="display: flex; gap: 20px;">
+                  <label style="font-weight: normal; cursor: pointer; display: flex; align-items: center; gap: 5px;">
+                      <input type="radio" name="possuiProdutosDeleg" value="sim" onchange="
+                          document.getElementById('checkDesat').checked = true; 
+                          document.getElementById('checkDesat').required = true;
+                          document.getElementById('secDesat').style.display = 'block';">
+                      Sim
+                  </label>
+                  <label style="font-weight: normal; cursor: pointer; display: flex; align-items: center; gap: 5px;">
+                      <input type="radio" name="possuiProdutosDeleg" value="nao" onchange="
+                          document.getElementById('checkDesat').checked = false; 
+                          document.getElementById('checkDesat').required = false;
+                          document.getElementById('secDesat').style.display = 'none';">
+                      Não
+                  </label>
+              </div>
+          </div>
 
-  <div style="font-size: 0.85em; color: #7c0015; margin-bottom: 15px; background: #fdf2f2; padding: 10px; border-left: 3px solid #7c0015; border-radius: 4px;">
-    <em>Atenção: Todos os produtos/serviços Interlegis serão desativados, obrigatório marcar autorização no item 3.</em>
-  </div>
-
-  <div class="grid">
-    <div class="campo"><label>DS1:</label><input type="text" id="dnsDs1"></div>
-    <div class="campo"><label>DS2:</label><input type="text" id="dnsDs2"></div>
-  </div>
-  <div class="campo"><label>DNSSEC:</label><input type="text" id="dnsSec"></div>
-</div>
+          <div class="grid">
+            <div class="campo"><label>DS1:</label><input type="text" id="dnsDs1"></div>
+            <div class="campo"><label>DS2:</label><input type="text" id="dnsDs2"></div>
+          </div>
+          <div class="campo"><label>DNSSEC:</label><input type="text" id="dnsSec"></div>
+        </div>
 
         <hr class="divisor-interno">
 
@@ -260,9 +276,8 @@
         </div>
         <div id="secDnsDom" class="secao-escondida">
             <div style="font-size: 0.85em; color: #7c0015; margin-bottom: 15px; background: #fdf2f2; padding: 10px; border-left: 3px solid #7c0015; border-radius: 4px;">
-    <em>Atenção: Será desativado o Portal Modelo, enquanto os outros produtos serão mantidos, obrigatório marcar autorização no item 3.</em>
-  </div>
-          
+                <em>Atenção: Será desativado o Portal Modelo, enquanto os outros produtos serão mantidos, obrigatório marcar autorização no item 3.</em>
+            </div>
           
           <div class="grid">
             <div class="campo"><label>Registro A (Endereço IP):</label><input type="text" id="regA"></div>
