@@ -160,14 +160,18 @@
         </div>
       </div>
 
-      <h3>1) Designação de Responsáveis Técnicos da Casa:</h3>
-      <div class="box-borda">
-        
-        <div class="checkbox-item">
-            <input type="checkbox" id="checkAddResp" onclick="toggleSecao('checkAddResp', 'secAddResp')"> Desejo designar responsáveis técnicos (obrigatório pelo menos um efetivo ou comissionado)
-        </div>
-        
-        <div id="secAddResp" class="secao-escondida">
+<h3>1) Designação de Responsáveis Técnicos da Casa:</h3>
+<div class="box-borda">
+  
+  <div style="font-size: 0.9em; color: #7c0015; margin-bottom: 15px; background: #fdf2f2; padding: 10px; border-left: 3px solid #7c0015; border-radius: 4px;">
+      <strong>Atenção:</strong> É obrigatório para a validação de todos os ofícios conter os dados de, pelo menos, um responsável técnico (efetivo ou comissionado).
+  </div>
+  
+  <div class="checkbox-item">
+      <input type="checkbox" id="checkAddResp" onclick="toggleSecao('checkAddResp', 'secAddResp')" required> Desejo designar responsáveis técnicos (obrigatório pelo menos um efetivo ou comissionado)
+  </div>
+  
+  <div id="secAddResp" class="secao-escondida">
             <div id="containerResponsaveis">
               <div class="responsavel-entry">
                 <div class="grid">
