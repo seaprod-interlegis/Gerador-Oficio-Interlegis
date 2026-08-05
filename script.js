@@ -250,12 +250,9 @@ document.getElementById("meuFormulario").addEventListener("submit", function (ev
     pdf.text(`DS2: ${dados.c4_Ds2}`, margem + 10, y);
     y += 6;
     const rawDnsSec = `DNSSEC²: ${dados.c4_DnsSec}`;
-const txtDnsSec = rawDnsSec.match(/.{1,60}/g) ? rawDnsSec.match(/.{1,60}/g).join('\n') : rawDnsSec;
-    pdf.text(txtDnsSec, margem + 10, y);
-    const numLinhasDns = txtDnsSec.split('\n').length;
-if (numLinhasDns > 1) {
-    y += (numLinhasDns - 1) * 5; 
-}
+    const linhasDnsSec = rawDnsSec.match(/.{1,38}/g) || [rawDnsSec];
+    pdf.text(linhasDnsSec, margem + 10, y);
+    y += (linhasDnsSec.length - 1) * 5;
 
     // --- RODAPÉ PÁGINA 1 ---
     pdf.setFontSize(7);
