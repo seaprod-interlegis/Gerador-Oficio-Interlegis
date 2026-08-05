@@ -249,7 +249,10 @@ document.getElementById("meuFormulario").addEventListener("submit", function (ev
     y += 6;
     pdf.text(`DS2: ${dados.c4_Ds2}`, margem + 10, y);
     y += 6;
-    pdf.text(`DNSSEC²: ${dados.c4_DnsSec}`, margem + 10, y);
+    const txtDnsSec = `DNSSEC²: ${dados.c4_DnsSec}`;
+pdf.text(txtDnsSec, margem + 10, y, { maxWidth: 160 });
+    const alturaDnsSec = pdf.getTextDimensions(txtDnsSec, { maxWidth: 160 }).h;
+y += (alturaDnsSec > 5 ? alturaDnsSec - 5 : 0);
 
     // --- RODAPÉ PÁGINA 1 ---
     pdf.setFontSize(7);
