@@ -43,11 +43,9 @@ function toggleSecao(checkboxId, containerId) {
     
     if (checkbox && container) {
         const estaMarcado = checkbox.checked;
-        
         container.style.display = estaMarcado ? "block" : "none";
         
         const campos = container.querySelectorAll('input, select');
-        
         campos.forEach(campo => {
             campo.required = estaMarcado;
         });
@@ -185,7 +183,6 @@ document.getElementById("meuFormulario").addEventListener("submit", function (ev
     pdf.text("1) Designação de Responsáveis Técnicos desta Casa:", margem, y);
     
     let rows = [];
-
     if (document.getElementById("checkAddResp") && document.getElementById("checkAddResp").checked) {
       rows = Array.from(document.querySelectorAll(".responsavel-entry")).map(el => [
         el.querySelector(".rep-nome") ? el.querySelector(".rep-nome").value : '',
@@ -247,11 +244,11 @@ document.getElementById("meuFormulario").addEventListener("submit", function (ev
     pdf.text(`DS2: ${dados.c4_Ds2}`, margem + 10, y);
     y += 6;
     
-    // --- DNSSEC EM MÚLTIPLAS LINHAS ---
+    // --- DNSSEC FORMATADO A CADA 38 CARACTERES ---
     const rawDnsSec = `DNSSEC²: ${dados.c4_DnsSec}`;
-    const linhasDnsSec = rawDnsSec.match(/.{1,60}/g) || [rawDnsSec];
-    pdf.text(linhasDnsSec, margem + 10, y);
-    y += (linhasDnsSec.length - 1) * 5;
+    const dnsSecLinhas = rawDnsSec.match(/.{1,38}/g) || [rawDnsSec];
+    pdf.text(dnsSecLinhas, margem + 10, y);
+    y += (dnsSecLinhas.length * 5);
 
     // --- RODAPÉ PÁGINA 1 ---
     pdf.setFontSize(7);
@@ -283,7 +280,7 @@ document.getElementById("meuFormulario").addEventListener("submit", function (ev
     y += 15;
     pdf.setFontSize(10);
     pdf.setFont("times", "bold");
-    pdf.text(`${dados.cDnsEmail} Reapontamento de DNS do E-MAIL para nova hospedagem externa`, margem, y);
+    pdf.text(`${dados.cDnsEmail} Reapontamento de DNS do E-MAIL para nova hospedagem externa⁴`, margem, y);
     y += 6;
     pdf.setFont("times", "normal");
     pdf.text("Dados necessários:", margem + 5, y);
@@ -293,20 +290,24 @@ document.getElementById("meuFormulario").addEventListener("submit", function (ev
     y += 6;
     pdf.text(`Registro MX: ${dados.regMx}`, margem + 5, y);
     y += 6;
-    pdf.text(`TXT SPF: ${dados.spf}`, margem + 5, y);
-    y += 6;
     
-    // --- TXT DKIM CORRIGIDO EM MÚLTIPLAS LINHAS ---
+    // --- TXT SPF (Também pode ser longo) ---
+    const rawSpf = `TXT SPF: ${dados.spf}`;
+    const spfLinhas = rawSpf.match(/.{1,38}/g) || [rawSpf];
+    pdf.text(spfLinhas, margem + 5, y);
+    y += (spfLinhas.length * 5);
+
+    // --- TXT DKIM FORMATADO A CADA 38 CARACTERES ---
     const rawDkim = `TXT DKIM: ${dados.dkim}`;
-    const linhasDkim = rawDkim.match(/.{1,55}/g) || [rawDkim];
-    pdf.text(linhasDkim, margem + 5, y);
-    y += (linhasDkim.length - 1) * 5;
+    const dkimLinhas = rawDkim.match(/.{1,38}/g) || [rawDkim];
+    pdf.text(dkimLinhas, margem + 5, y);
+    y += (dkimLinhas.length * 5);
     
-    y += 8;
+    y += 3;
     pdf.setFontSize(8);
     pdf.text("Acesso à Interface de gerência: correioadm.municipio.uf.leg.br | Conta: usuário@municipio.uf.leg.br", margem + 5, y);
     
-    y += 15;
+    y += 12;
     pdf.setFontSize(10);
     pdf.setFont("times", "bold");
     pdf.text("5) Restauração de dados - Backup", margem, y);
