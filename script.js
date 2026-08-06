@@ -296,7 +296,10 @@ document.getElementById("meuFormulario").addEventListener("submit", function (ev
     y += 6;
     pdf.text(`TXT SPF: ${dados.spf}`, margem + 5, y);
     y += 6;
-    pdf.text(`TXT DKIM: ${dados.dkim}`, margem + 5, y);
+    const rawDkim = `TXT DKIM: ${dados.dkim}`;
+    const linhasDkim = rawDkim.match(/.{1,60}/g) || [rawDkim];
+    pdf.text(linhasDkim, margem + 5, y);
+    y += (linhasDkim.length - 1) * 5;
     
     y += 8;
     pdf.setFontSize(8);
