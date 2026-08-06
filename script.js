@@ -64,12 +64,9 @@ document.getElementById("meuFormulario").addEventListener("submit", function (ev
   const radioSimDeleg = document.querySelector('input[name="possuiProdutosDeleg"][value="sim"]');
   const delegacaoComProdutos = checkDeleg && radioSimDeleg && radioSimDeleg.checked;
 
-
   if ((delegacaoComProdutos || checkDnsDom) && !checkDesat) {
       alert("ATENÇÃO: Como você confirmou possuir produtos ativos na Delegação ou selecionou 'Reapontamento DNS', é OBRIGATÓRIO marcar e preencher a seção '3) Solicitação de desativação'.");
-      
       document.getElementById("checkDesat").scrollIntoView({ behavior: 'smooth', block: 'center' });
-      
       return; 
   }
 
@@ -249,6 +246,8 @@ document.getElementById("meuFormulario").addEventListener("submit", function (ev
     y += 6;
     pdf.text(`DS2: ${dados.c4_Ds2}`, margem + 10, y);
     y += 6;
+    
+    // --- DNSSEC EM MÚLTIPLAS LINHAS ---
     const rawDnsSec = `DNSSEC²: ${dados.c4_DnsSec}`;
     const linhasDnsSec = rawDnsSec.match(/.{1,60}/g) || [rawDnsSec];
     pdf.text(linhasDnsSec, margem + 10, y);
@@ -296,8 +295,10 @@ document.getElementById("meuFormulario").addEventListener("submit", function (ev
     y += 6;
     pdf.text(`TXT SPF: ${dados.spf}`, margem + 5, y);
     y += 6;
+    
+    // --- TXT DKIM CORRIGIDO EM MÚLTIPLAS LINHAS ---
     const rawDkim = `TXT DKIM: ${dados.dkim}`;
-    const linhasDkim = rawDkim.match(/.{1,60}/g) || [rawDkim];
+    const linhasDkim = rawDkim.match(/.{1,55}/g) || [rawDkim];
     pdf.text(linhasDkim, margem + 5, y);
     y += (linhasDkim.length - 1) * 5;
     
