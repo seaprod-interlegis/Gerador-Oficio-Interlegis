@@ -323,6 +323,22 @@ document.getElementById("meuFormulario").addEventListener("submit", function (ev
     pdf.text("Acesso à Interface de gerência: correioadm.municipio.uf.leg.br | Conta: usuário@municipio.uf.leg.br", margem + 5, y);
     
     y += 15;
+
+    if (y > 220) {
+        pdf.setFontSize(7);
+        pdf.text("3. Será desativado o Portal Modelo, enquanto os outros produtos serão mantidos.", margem, 268);
+        const txtRodapeAtual = "4. Será desativado o serviço de e-mail oferecido pelo Interlegis de forma definitiva, ou seja, não poderá ser recuperado, mas poderá ser mantido o domínio .leg.br nos endereços dos e-mails.";
+        pdf.text(pdf.splitTextToSize(txtRodapeAtual, 170), margem, 272);
+        pdf.line(margem, 280, 190, 280);
+        pdf.setFontSize(8);
+        pdf.text(pdf.splitTextToSize(rodapeFormatado, 170), 105, 284, { align: 'center' });
+        
+        pdf.addPage();
+        y = 15;
+        cabecalho();
+        y += 40;
+    }
+
     pdf.setFontSize(10);
     pdf.setFont("times", "bold");
     pdf.text("5) Restauração de dados - Backup", margem, y);
@@ -335,9 +351,29 @@ document.getElementById("meuFormulario").addEventListener("submit", function (ev
     y += dimBack.h + 5;
     pdf.text(`Justificativa obrigatória: ${dados.c5_Just}`, margem + 5, y);
 
+   
+    if (y > 190) {
+      
+        pdf.setFontSize(7);
+        pdf.text("3. Será desativado o Portal Modelo, enquanto os outros produtos serão mantidos.", margem, 268);
+        const txtRodapeAtual = "4. Será desativado o serviço de e-mail oferecido pelo Interlegis de forma definitiva, ou seja, não poderá ser recuperado, mas poderá ser mantido o domínio .leg.br nos endereços dos e-mails.";
+        pdf.text(pdf.splitTextToSize(txtRodapeAtual, 170), margem, 272);
+        pdf.line(margem, 280, 190, 280);
+        pdf.setFontSize(8);
+        pdf.text(pdf.splitTextToSize(rodapeFormatado, 170), 105, 284, { align: 'center' });
+        
+        pdf.addPage();
+        y = 15;
+        cabecalho();
+        y += 40;
+        pdf.setFont("times", "normal");
+        pdf.setFontSize(10);
+    }
+
+    // --- BLOCO DE ASSINATURA ---
     y += 15;
     pdf.text("Atenciosamente,", margem, y); 
-    y += 25;
+    y += 30; 
     pdf.line(65, y, 145, y); 
     pdf.setFont("times", "bold");
     pdf.text(dados.nomePres, 105, y + 5, { align: 'center' }); 
@@ -345,9 +381,9 @@ document.getElementById("meuFormulario").addEventListener("submit", function (ev
     pdf.text("Presidente", 105, y + 10, { align: 'center' });
     pdf.text(dados.mandato, 105, y + 15, { align: 'center' });
 
-    // --- RODAPÉ PÁGINA 2 ---
+    // --- RODAPÉ ÚLTIMA PÁGINA  ---
     pdf.setFontSize(7);
-    pdf.text(pdf.splitTextToSize("3. Será desativado o Portal Modelo, enquanto os outros produtos serão mantidos.", 170), margem, 268);
+    pdf.text("3. Será desativado o Portal Modelo, enquanto os outros produtos serão mantidos.", margem, 268);
     const t4 = "4. Será desativado o serviço de e-mail oferecido pelo Interlegis de forma definitiva, ou seja, não poderá ser recuperado, mas poderá ser mantido o domínio .leg.br nos endereços dos e-mails.";
     pdf.text(pdf.splitTextToSize(t4, 170), margem, 272); 
     pdf.line(margem, 280, 190, 280);
@@ -365,30 +401,3 @@ document.getElementById("meuFormulario").addEventListener("submit", function (ev
     gerarPDF(null);
   }
 });
-
-function forcarDesativacao() {
-    const checkDnsDom = document.getElementById("checkDNSDominio") && document.getElementById("checkDNSDominio").checked;
-    const checkDesatElement = document.getElementById("checkDesat");
-    
-    const radioSim = document.querySelector('input[name="possuiProdutosDeleg"][value="sim"]');
-    const simMarcado = radioSim && radioSim.checked;
-
-    if (checkDesatElement) {
-        if (checkDnsDom) {
-            if (!checkDesatElement.checked) {
-                checkDesatElement.checked = true; 
-                toggleSecao('checkDesat', 'secDesat'); 
-            }
-        } 
-        else if (!simMarcado) {
-            if (checkDesatElement.checked) {
-                checkDesatElement.checked = false;
-                toggleSecao('checkDesat', 'secDesat'); 
-            }
-        }
-    }
-}
-
-if (document.getElementById("checkDNSDominio")) {
-    document.getElementById("checkDNSDominio").addEventListener("change", forcarDesativacao);
-}
