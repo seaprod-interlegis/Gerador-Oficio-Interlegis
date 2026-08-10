@@ -296,11 +296,28 @@ document.getElementById("meuFormulario").addEventListener("submit", function (ev
     y += 6;
     pdf.text(`TXT SPF: ${dados.spf}`, margem + 5, y);
     y += 6;
-    const rawDkim = `TXT DKIM: ${dados.dkim}`;
-    const linhasDkim = rawDkim.match(/.{1,60}/g) || [rawDkim];
-    pdf.text(linhasDkim, margem + 5, y);
-    y += (linhasDkim.length - 1) * 5;
     
+    const rawDkim = `TXT DKIM: ${dados.dkim}`;
+    const linhasDkim = rawDkim.match(/.{1,75}/g) || [rawDkim];
+
+    linhasDkim.forEach((linha) => {
+        if (y > 250) { 
+            pdf.line(margem, 280, 190, 280);
+            pdf.setFontSize(8);
+            pdf.setFont("times", "normal");
+            pdf.text(pdf.splitTextToSize(rodapeFormatado, 170), 105, 284, { align: 'center' });
+
+            pdf.addPage();
+            y = 15;
+            cabecalho();
+            y += 40; 
+            pdf.setFontSize(10);
+            pdf.setFont("times", "normal");
+        }
+        pdf.text(linha, margem + 5, y);
+        y += 5;
+    });
+   
     y += 8;
     pdf.setFontSize(8);
     pdf.text("Acesso à Interface de gerência: correioadm.municipio.uf.leg.br | Conta: usuário@municipio.uf.leg.br", margem + 5, y);
