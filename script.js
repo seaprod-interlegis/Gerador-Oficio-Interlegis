@@ -37,6 +37,37 @@ function removerResponsavel(botao) {
   }
 }
 
+function verificarDesativacaoObrigatoria() {
+  const checkDeleg = document.getElementById("checkDeleg") && document.getElementById("checkDeleg").checked;
+  const delegSim = document.querySelector('input[name="possuiProdutosDeleg"][value="sim"]')?.checked;
+  const precisaPorDelegacao = checkDeleg && delegSim;
+
+  const checkDnsDom = document.getElementById("checkDNSDominio") && document.getElementById("checkDNSDominio").checked;
+  const dnsSim = document.querySelector('input[name="possuiPortalDns"][value="sim"]')?.checked;
+  const precisaPorDns = checkDnsDom && dnsSim;
+
+  const obrigarDesativacao = precisaPorDelegacao || precisaPorDns;
+
+  const checkDesat = document.getElementById('checkDesat');
+  const secDesat = document.getElementById('secDesat');
+  const camposDesat = secDesat.querySelectorAll('input, select');
+
+  const avisoDeleg = document.getElementById('avisoDelegProdutos');
+  const avisoDns = document.getElementById('avisoDnsPortal');
+
+  if (avisoDeleg) avisoDeleg.style.display = precisaPorDelegacao ? 'block' : 'none';
+  if (avisoDns) avisoDns.style.display = precisaPorDns ? 'block' : 'none';
+
+  if (obrigarDesativacao) {
+      checkDesat.checked = true;
+      secDesat.style.display = 'block';
+      camposDesat.forEach(campo => campo.required = true);
+  } else {
+      secDesat.style.display = checkDesat.checked ? 'block' : 'none';
+      camposDesat.forEach(campo => campo.required = checkDesat.checked);
+  }
+}
+
 function toggleSecao(checkboxId, containerId) {
     const checkbox = document.getElementById(checkboxId);
     const container = document.getElementById(containerId);
@@ -44,34 +75,58 @@ function toggleSecao(checkboxId, containerId) {
     if (checkbox && container) {
         const estaMarcado = checkbox.checked;
         
+        // NOVA TRAVA DE SEGURANÇA: Impedir de desmarcar o item 3 se for obrigatório
+        if (!estaMarcado && checkboxId === "checkDesat") {
+            const checkDeleg = document.getElementById("checkDeleg")?.checked;
+            const delegSim = document.querySelector('input[name="possuiProdutosDeleg"][value="sim"]')?.checked;
+            
+            const checkDnsDom = document.getElementById("checkDNSDominio")?.checked;
+            const dnsSim = document.querySelector('input[name="possuiPortalDns"][value="sim"]')?.checked;
+            
+            if ((checkDeleg && delegSim) || (checkDnsDom && dnsSim)) {
+                alert("A desativação (Item 3) é obrigatória devido às opções selecionadas na seção 4.");
+                checkbox.checked = true; 
+                return; 
+            }
+        }
+        
         container.style.display = estaMarcado ? "block" : "none";
         
         const campos = container.querySelectorAll('input, select');
-        
         campos.forEach(campo => {
             campo.required = estaMarcado;
         });
+
+        if (checkboxId === "checkDeleg" || checkboxId === "checkDNSDominio") {
+            verificarDesativacaoObrigatoria();
+        }
     }
 }
 
 document.getElementById("meuFormulario").addEventListener("submit", function (event) {
   event.preventDefault();
 
-  const checkDeleg = document.getElementById("checkDeleg") && document.getElementById("checkDeleg").checked;
-  const checkDnsDom = document.getElementById("checkDNSDominio") && document.getElementById("checkDNSDominio").checked;
-  const checkDesat = document.getElementById("checkDesat") && document.getElementById("checkDesat").checked;
+  // --- NOVA TRAVA DE SUBMIT ---
+  const checkDeleg = document.getElementById("checkDeleg")?.checked;
+  const radioSimDeleg = document.querySelector('input[name="possuiProdutosDeleg"][value="sim"]')?.checked;
+  const delegacaoComProdutos = checkDeleg && radioSimDeleg;
 
-  const radioSimDeleg = document.querySelector('input[name="possuiProdutosDeleg"][value="sim"]');
-  const delegacaoComProdutos = checkDeleg && radioSimDeleg && radioSimDeleg.checked;
+  const checkDnsDom = document.getElementById("checkDNSDominio")?.checked;
+  const radioSimDns = document.querySelector('input[name="possuiPortalDns"][value="sim"]')?.checked;
+  const dnsComPortal = checkDnsDom && radioSimDns;
 
+  const checkDesat = document.getElementById("checkDesat")?.checked;
+  const valProdDesat = document.getElementById("prodDesat").value.trim();
+  const valJustDesat = document.getElementById("justDesat").value.trim();
 
-  if ((delegacaoComProdutos || checkDnsDom) && !checkDesat) {
-      alert("ATENÇÃO: Como você confirmou possuir produtos ativos na Delegação ou selecionou 'Reapontamento DNS', é OBRIGATÓRIO marcar e preencher a seção '3) Solicitação de desativação'.");
-      
-      document.getElementById("checkDesat").scrollIntoView({ behavior: 'smooth', block: 'center' });
-      
-      return; 
+  if (delegacaoComProdutos || dnsComPortal) {
+      if (!checkDesat || valProdDesat === "" || valJustDesat === "") {
+          alert("ATENÇÃO: Como você confirmou possuir produtos ativos na Delegação ou Portal Modelo no Reapontamento, é OBRIGATÓRIO preencher o 'Produto(s)' e a 'Justificativa' na seção '3) Solicitação de desativação'.");
+          document.getElementById("checkDesat").scrollIntoView({ behavior: 'smooth', block: 'center' });
+          return; 
+      }
   }
+  // --- FIM DA NOVA TRAVA ---
 
   const brasaoInput = document.getElementById("brasao");
 
@@ -317,7 +372,7 @@ document.getElementById("meuFormulario").addEventListener("submit", function (ev
         pdf.text(linha, margem + 5, y);
         y += 5;
     });
-   
+    
     y += 8;
     pdf.setFontSize(8);
     pdf.text("Acesso à Interface de gerência: correioadm.municipio.uf.leg.br | Conta: usuário@municipio.uf.leg.br", margem + 5, y);
@@ -351,9 +406,7 @@ document.getElementById("meuFormulario").addEventListener("submit", function (ev
     y += dimBack.h + 5;
     pdf.text(`Justificativa obrigatória: ${dados.c5_Just}`, margem + 5, y);
 
-   
     if (y > 190) {
-      
         pdf.setFontSize(7);
         pdf.text("3. Será desativado o Portal Modelo, enquanto os outros produtos serão mantidos.", margem, 268);
         const txtRodapeAtual = "4. Será desativado o serviço de e-mail oferecido pelo Interlegis de forma definitiva, ou seja, não poderá ser recuperado, mas poderá ser mantido o domínio .leg.br nos endereços dos e-mails.";
