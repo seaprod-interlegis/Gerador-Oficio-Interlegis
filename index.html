@@ -45,6 +45,36 @@
         margin-bottom: 0; 
     }
 
+    .dns-entry {
+        padding-bottom: 12px;
+        margin-bottom: 12px;
+        border-bottom: 1px dashed #ccc;
+    }
+    .dns-entry:last-child {
+        border-bottom: none;
+        margin-bottom: 0;
+        padding-bottom: 0;
+    }
+    .dns-grid {
+        display: grid;
+        grid-template-columns: 1.2fr 0.8fr 2fr auto;
+        gap: 10px;
+        align-items: end;
+    }
+    .dns-grid .campo {
+        margin-bottom: 0;
+    }
+    .dns-grid .btn-remove {
+        margin-top: 0;
+        height: 39px;
+    }
+
+    @media (max-width: 700px) {
+        .dns-grid {
+            grid-template-columns: 1fr;
+        }
+    }
+
     .campo { display: flex; flex-direction: column; margin-bottom: 10px; }
     
     label { font-weight: bold; margin-bottom: 5px; font-size: 0.9em; color: #000; } 
@@ -57,7 +87,7 @@
     
     button { cursor: pointer; border: none; border-radius: 4px; font-weight: bold; transition: 0.3s; }
     
-    .btn-add { background-color: #00305c; color: white; padding: 10px 15px; margin-bottom: 20px; margin-top: 10px; } 
+    .btn-add { background-color: #00305c; color: white; padding: 10px 15px; margin-bottom: 10px; margin-top: 10px; } 
     .btn-add:hover { background-color: #00824a; }
 
     .btn-remove { background-color: #787777; color: white; padding: 6px 12px; margin-top: 5px; font-size: 0.85em; }
@@ -261,10 +291,10 @@
           </div>
 
           <div class="grid">
-            <div class="campo"><label>DS1:</label><input type="text" id="dnsDs1"></div>
-            <div class="campo"><label>DS2:</label><input type="text" id="dnsDs2"></div>
+            <div class="campo"><label>NS1:</label><input type="text" id="dnsNs1"></div>
+            <div class="campo"><label>NS2:</label><input type="text" id="dnsNs2"></div>
           </div>
-          <div class="campo"><label>DNSSEC:</label><input type="text" id="dnsSec"></div>
+          <div class="campo"><label>DS:</label><input type="text" id="dnsDs"></div>
         </div>
 
         <hr class="divisor-interno">
@@ -289,30 +319,76 @@
               <em>Atenção: Como há um Portal Modelo ativo, ele será desativado no reapontamento. Portanto, é obrigatório marcar e preencher a autorização no item 3.</em>
           </div>
           
-          <div class="grid">
-            <div class="campo"><label>Registro A (Endereço IP):</label><input type="text" id="regA"></div>
-            <div class="campo"><label>CNAME:</label><input type="text" id="cname"></div>
+          <div id="containerDnsDom">
+            <div class="dns-entry">
+              <div class="dns-grid">
+                <div class="campo">
+                  <label>Nome (opcional):</label>
+                  <input type="text" class="dns-nome" data-opcional="true">
+                </div>
+                <div class="campo">
+                  <label>Tipo:*</label>
+                  <select class="dns-tipo">
+                    <option value="" disabled selected>Selecione...</option>
+                    <option value="A">A</option>
+                    <option value="CNAME">CNAME</option>
+                    <option value="MX">MX</option>
+                    <option value="TXT">TXT</option>
+                    <option value="SRV">SRV</option>
+                    <option value="NS">NS</option>
+                  </select>
+                </div>
+                <div class="campo">
+                  <label>Conteúdo:*</label>
+                  <input type="text" class="dns-conteudo">
+                </div>
+                <button type="button" class="btn-remove" style="display: none;" onclick="removerRegistroDNS(this, 'containerDnsDom')">Excluir</button>
+              </div>
+            </div>
           </div>
+          <button type="button" class="btn-add" onclick="addRegistroDNS('containerDnsDom')">+ Adicionar Registro DNS</button>
         </div>
 
         <hr class="divisor-interno">
 
-       <div class="checkbox-item">
-    <input type="checkbox" id="checkDNSEmail" onclick="toggleSecao('checkDNSEmail', 'secDnsEmail')"> Reapontamento DNS do e-mail
-</div>
-<div id="secDnsEmail" class="secao-escondida">
-    
-    <div style="font-size: 0.85em; color: #7c0015; margin-bottom: 15px; background: #fdf2f2; padding: 10px; border-left: 3px solid #7c0015; border-radius: 4px;">
-        <em>Atenção: Será desativado o serviço de e-mail oferecido pelo Interlegis de forma definitiva, mas poderá ser mantido o domínio .leg.br nos endereços dos e-mails.</em>
-    </div>
+        <div class="checkbox-item">
+            <input type="checkbox" id="checkDNSEmail" onclick="toggleSecao('checkDNSEmail', 'secDnsEmail')"> Reapontamento DNS do e-mail
+        </div>
+        <div id="secDnsEmail" class="secao-escondida">
+            
+            <div style="font-size: 0.85em; color: #7c0015; margin-bottom: 15px; background: #fdf2f2; padding: 10px; border-left: 3px solid #7c0015; border-radius: 4px;">
+                <em>Atenção: Será desativado o serviço de e-mail oferecido pelo Interlegis de forma definitiva, mas poderá ser mantido o domínio .leg.br nos endereços dos e-mails.</em>
+            </div>
 
-    <div class="grid">
-        <div class="campo"><label>Registro A (Endereço IP):</label><input type="text" id="emailRegA"></div>
-        <div class="campo"><label>Registro MX:</label><input type="text" id="regMx"></div>
-        <div class="campo"><label>TXT SPF:</label><input type="text" id="txtSpf"></div>
-        <div class="campo"><label>TXT DKIM:</label><input type="text" id="txtDkim"></div>
-    </div>
-</div>
+            <div id="containerDnsEmail">
+              <div class="dns-entry">
+                <div class="dns-grid">
+                  <div class="campo">
+                    <label>Nome (opcional):</label>
+                    <input type="text" class="dns-nome" data-opcional="true">
+                  </div>
+                  <div class="campo">
+                    <label>Tipo:*</label>
+                    <select class="dns-tipo">
+                      <option value="" disabled selected>Selecione...</option>
+                      <option value="A">A</option>
+                      <option value="CNAME">CNAME</option>
+                      <option value="MX">MX</option>
+                      <option value="TXT">TXT</option>
+                      <option value="SRV">SRV</option>
+                      <option value="NS">NS</option>
+                    </select>
+                  </div>
+                  <div class="campo">
+                    <label>Conteúdo:*</label>
+                    <input type="text" class="dns-conteudo">
+                  </div>
+                  <button type="button" class="btn-remove" style="display: none;" onclick="removerRegistroDNS(this, 'containerDnsEmail')">Excluir</button>
+                </div>
+              </div>
+            </div>
+            <button type="button" class="btn-add" onclick="addRegistroDNS('containerDnsEmail')">+ Adicionar Registro de E-mail</button>
+        </div>
 
       </div>
 
